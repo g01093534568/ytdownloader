@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { fetchVideoInfo, downloadVideo, VideoInfo } from '@/lib/api';
 
 export default function Home() {
@@ -21,8 +22,8 @@ export default function Home() {
     try {
       const info = await fetchVideoInfo(url);
       setVideoInfo(info);
-    } catch (err: any) {
-      setError(err.message || 'Something went wrong');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong');
     } finally {
       setLoading(false);
     }
@@ -37,15 +38,14 @@ export default function Home() {
     try {
       const downloadUrl = await downloadVideo(url);
       
-      // Create a temporary link to trigger download
       const link = document.createElement('a');
       link.href = downloadUrl;
       link.setAttribute('download', `${videoInfo?.title || 'video'}.mp4`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-    } catch (err: any) {
-      setError(err.message || 'Download failed');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Download failed');
     } finally {
       setDownloading(false);
     }
@@ -97,11 +97,13 @@ export default function Home() {
         {videoInfo && (
           <div className="bg-white shadow-xl rounded-2xl overflow-hidden animate-fade-in">
             <div className="md:flex">
-              <div className="md:flex-shrink-0">
-                <img
-                  className="h-48 w-full object-cover md:w-64"
+              <div className="md:flex-shrink-0 relative w-full md:w-64 h-48">
+                <Image
+                  className="object-cover"
                   src={videoInfo.thumbnail}
                   alt={videoInfo.title}
+                  fill
+                  unoptimized
                 />
               </div>
               <div className="p-6 flex flex-col justify-between flex-1">
