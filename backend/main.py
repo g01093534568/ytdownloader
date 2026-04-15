@@ -78,7 +78,12 @@ async def download_video(video: VideoURL, background_tasks: BackgroundTasks):
             # In a real production app, we might use a task queue and polling
             ydl.download([video.url])
             
-        return {"download_url": f"/static/{output_filename}"}
+        # Determine correct API URL for the response
+        api_url = os.getenv("VERCEL_URL", "http://localhost:8000")
+        if not api_url.startswith("http"):
+            api_url = f"https://{api_url}"
+            
+        return {"download_url": f"{api_url}/static/{output_filename}"}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 

@@ -1,4 +1,6 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_BASE_URL = typeof window !== 'undefined' 
+  ? (window.location.origin.includes('localhost') ? 'http://localhost:8000' : window.location.origin)
+  : 'http://localhost:8000';
 
 export interface VideoInfo {
   title: string;
@@ -30,5 +32,5 @@ export const downloadVideo = async (url: string): Promise<string> => {
     throw new Error(errorData.detail || 'Failed to start download');
   }
   const data = await response.json();
-  return `${API_BASE_URL}${data.download_url}`;
+  return data.download_url; // Return the absolute URL from backend
 };
