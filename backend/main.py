@@ -19,7 +19,8 @@ app.add_middleware(
 )
 
 # Static files for downloads
-DOWNLOAD_DIR = "backend/static"
+# Vercel serverless functions should use /tmp for temporary storage
+DOWNLOAD_DIR = "/tmp/ytdownloader_static" if os.getenv("VERCEL") else "backend/static"
 if not os.path.exists(DOWNLOAD_DIR):
     os.makedirs(DOWNLOAD_DIR)
 
