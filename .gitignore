@@ -1,0 +1,8 @@
+node_modules
+.next
+backend/static/*.mp4
+backend/static/*.m4a
+__pycache__
+.env
+.env.local
+
